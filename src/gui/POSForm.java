@@ -387,6 +387,11 @@ calculateGrandTotal();
 
 model.setRowCount(0);
 
+cmbMedicine.setSelectedIndex(-1);
+txtQuantity.setText("1");
+txtPrice.setText("0.00");
+txtTotal.setText("0.00");
+
 calculateGrandTotal();
     }//GEN-LAST:event_btnClearActionPerformed
 

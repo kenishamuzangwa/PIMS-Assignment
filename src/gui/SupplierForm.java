@@ -8,6 +8,8 @@ package gui;
 import dao.SupplierDAO;
 import model.Supplier;
 import javax.swing.JOptionPane;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author kenisha
@@ -19,8 +21,32 @@ public class SupplierForm extends javax.swing.JFrame {
      */
     public SupplierForm() {
         initComponents();
+        loadSuppliers();
         //loadUsers();
     }
+    
+    private void loadSuppliers() {
+
+    SupplierDAO supplierDAO = new SupplierDAO();
+
+    List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+
+    DefaultTableModel model =
+            (DefaultTableModel) tblSuppliers.getModel();
+
+    model.setRowCount(0);
+
+    for (Supplier supplier : suppliers) {
+
+        model.addRow(new Object[]{
+            supplier.getSupplierId(),
+            supplier.getName(),
+            supplier.getContactPerson(),
+            supplier.getPhone(),
+            supplier.getEmail()
+        });
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -46,6 +72,8 @@ public class SupplierForm extends javax.swing.JFrame {
         btnBack = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblSuppliers = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,6 +115,19 @@ public class SupplierForm extends javax.swing.JFrame {
             }
         });
 
+        tblSuppliers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Supplier ID", "Supplier Name", "Contact", "Phone"
+            }
+        ));
+        jScrollPane2.setViewportView(tblSuppliers);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,19 +151,22 @@ public class SupplierForm extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(44, 44, 44)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtContact, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(txtContact, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                        .addComponent(txtPhone, javax.swing.GroupLayout.Alignment.LEADING))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(224, 224, 224)
+                        .addGap(225, 225, 225)
                         .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSave)))
                 .addContainerGap())
         );
@@ -151,12 +195,14 @@ public class SupplierForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblAddress)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(btnClear)
                     .addComponent(btnSave))
-                .addGap(116, 116, 116))
+                .addContainerGap())
         );
 
         pack();
@@ -192,6 +238,8 @@ if (supplierDAO.addSupplier(supplier)) {
 
     JOptionPane.showMessageDialog(this,
             "Supplier added successfully!");
+    
+    loadSuppliers();
 
     txtName.setText("");
     txtContact.setText("");
@@ -214,7 +262,11 @@ if (supplierDAO.addSupplier(supplier)) {
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         // TODO add your handling code here:
-            
+            txtName.setText("");
+txtContact.setText("");
+txtPhone.setText("");
+txtEmail.setText("");
+txtAddress.setText("");
     }//GEN-LAST:event_btnClearActionPerformed
 
     /**
@@ -258,11 +310,13 @@ if (supplierDAO.addSupplier(supplier)) {
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAddress;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblPhone;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JTable tblSuppliers;
     private javax.swing.JTextArea txtAddress;
     private javax.swing.JTextField txtContact;
     private javax.swing.JTextField txtEmail;

@@ -6,6 +6,9 @@ package gui;
 
 import dao.MedicineDAO;
 import model.Medicine;
+import dao.SupplierDAO;
+import model.Supplier;
+import java.util.List;
 import javax.swing.JOptionPane;
 /**
  *
@@ -17,8 +20,24 @@ public class MedicineForm extends javax.swing.JFrame {
      * Creates new form MedicineForm
      */
     public MedicineForm() {
-        initComponents();
+    initComponents();
+    loadSuppliers();
+
     }
+    
+    private void loadSuppliers() {
+
+    SupplierDAO supplierDAO = new SupplierDAO();
+
+    List<Supplier> suppliers = supplierDAO.getAllSuppliers();
+
+    cmbSupplier.removeAllItems();
+
+    for (Supplier supplier : suppliers) {
+        cmbSupplier.addItem(
+                supplier.getSupplierId() + " - " + supplier.getName());
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,10 +64,10 @@ public class MedicineForm extends javax.swing.JFrame {
         lblExpiry = new javax.swing.JLabel();
         txtExpiry = new javax.swing.JTextField();
         lblSupplier = new javax.swing.JLabel();
-        txtSupplier = new javax.swing.JTextField();
         btnBack = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
+        cmbSupplier = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,6 +98,11 @@ public class MedicineForm extends javax.swing.JFrame {
         });
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         btnSave.setText("Save Medicine");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -86,6 +110,8 @@ public class MedicineForm extends javax.swing.JFrame {
                 btnSaveActionPerformed(evt);
             }
         });
+
+        cmbSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,9 +157,9 @@ public class MedicineForm extends javax.swing.JFrame {
                                     .addComponent(lblSupplier, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(lblExpiry, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(80, 80, 80)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtExpiry, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSupplier, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtExpiry, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
@@ -174,11 +200,11 @@ public class MedicineForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblExpiry)
                     .addComponent(txtExpiry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSupplier)
-                    .addComponent(txtSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                    .addComponent(cmbSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(btnClear)
@@ -201,7 +227,7 @@ if (name.isEmpty() || company.isEmpty() || medicineType.isEmpty()
         || txtQuantity.getText().trim().isEmpty()
         || txtReorder.getText().trim().isEmpty()
         || expiryDate.isEmpty()
-        || txtSupplier.getText().trim().isEmpty()) {
+        || cmbSupplier.getSelectedItem() == null)  {
 
     JOptionPane.showMessageDialog(this,
             "Please fill in all fields.");
@@ -213,7 +239,12 @@ try {
     double price = Double.parseDouble(txtPrice.getText().trim());
     int quantity = Integer.parseInt(txtQuantity.getText().trim());
     int reorderLevel = Integer.parseInt(txtReorder.getText().trim());
-    int supplierId = Integer.parseInt(txtSupplier.getText().trim());
+    
+    String selectedSupplier =
+        cmbSupplier.getSelectedItem().toString();
+
+int supplierId =
+        Integer.parseInt(selectedSupplier.split(" - ")[0]);
 
     Medicine medicine = new Medicine();
 
@@ -251,6 +282,21 @@ try {
         new AdminDashboard().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        // TODO add your handling code here:
+        txtName.setText("");
+txtCompany.setText("");
+txtType.setText("");
+txtPrice.setText("");
+txtQuantity.setText("");
+txtReorder.setText("");
+txtExpiry.setText("");
+
+if (cmbSupplier.getItemCount() > 0) {
+    cmbSupplier.setSelectedIndex(0);
+}
+    }//GEN-LAST:event_btnClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -291,6 +337,7 @@ try {
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cmbSupplier;
     private javax.swing.JLabel lblCompany;
     private javax.swing.JLabel lblExpiry;
     private javax.swing.JLabel lblName;
@@ -306,7 +353,6 @@ try {
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtQuantity;
     private javax.swing.JTextField txtReorder;
-    private javax.swing.JTextField txtSupplier;
     private javax.swing.JTextField txtType;
     // End of variables declaration//GEN-END:variables
 }

@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-
+import java.util.List;
 /**
  *
  * @author kenisha
@@ -45,4 +45,47 @@ public class SupplierDAO {
             return false;
         }
     }
+    public List<Supplier> getAllSuppliers() {
+
+    List<Supplier> suppliers = new java.util.ArrayList<>();
+
+    String sql = "SELECT * FROM suppliers ORDER BY name";
+
+    try (Connection connection = DBConnection.getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql);
+         java.sql.ResultSet resultSet = statement.executeQuery()) {
+
+        while (resultSet.next()) {
+
+            Supplier supplier = new Supplier();
+
+            supplier.setSupplierId(
+                    resultSet.getInt("supplier_id"));
+
+            supplier.setName(
+                    resultSet.getString("name"));
+
+            supplier.setContactPerson(
+                    resultSet.getString("contact_person"));
+
+            supplier.setPhone(
+                    resultSet.getString("phone"));
+
+            supplier.setEmail(
+                    resultSet.getString("email"));
+
+            supplier.setAddress(
+                    resultSet.getString("address"));
+
+            suppliers.add(supplier);
+        }
+
+    } catch (SQLException e) {
+
+        System.out.println(
+                "Error loading suppliers: " + e.getMessage());
+    }
+
+    return suppliers;
+}
 }

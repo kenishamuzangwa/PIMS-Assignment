@@ -78,6 +78,11 @@ public AdminDashboard() {
         });
 
         btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
 
         btnPOS.setText("Point of Sale");
         btnPOS.addActionListener(new java.awt.event.ActionListener() {
@@ -169,6 +174,12 @@ public AdminDashboard() {
         new POSForm(loggedInUser).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnPOSActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // TODO add your handling code here:
+        new LoginForm().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
