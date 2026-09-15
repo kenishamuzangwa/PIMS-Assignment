@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  * @author kenisha
  */
 public class SupplierForm extends javax.swing.JFrame {
-
+private int selectedSupplierId = -1;
     /**
      * Creates new form SupplierForm
      */
@@ -74,6 +74,7 @@ public class SupplierForm extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSuppliers = new javax.swing.JTable();
+        btnUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,16 +118,28 @@ public class SupplierForm extends javax.swing.JFrame {
 
         tblSuppliers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Supplier ID", "Supplier Name", "Contact", "Phone"
+                "Supplier ID", "Supplier Name", "Contact", "Phone", "Email"
             }
         ));
+        tblSuppliers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSuppliersMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblSuppliers);
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -166,6 +179,8 @@ public class SupplierForm extends javax.swing.JFrame {
                         .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(225, 225, 225)
                         .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSave)))
                 .addContainerGap())
@@ -201,7 +216,8 @@ public class SupplierForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(btnClear)
-                    .addComponent(btnSave))
+                    .addComponent(btnSave)
+                    .addComponent(btnUpdate))
                 .addContainerGap())
         );
 
@@ -269,6 +285,84 @@ txtEmail.setText("");
 txtAddress.setText("");
     }//GEN-LAST:event_btnClearActionPerformed
 
+    private void tblSuppliersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSuppliersMouseClicked
+        // TODO add your handling code here:
+        int selectedRow = tblSuppliers.getSelectedRow();
+
+if (selectedRow != -1) {
+    
+    selectedSupplierId = Integer.parseInt(
+        tblSuppliers.getValueAt(selectedRow, 0).toString());
+
+    txtName.setText(
+            tblSuppliers.getValueAt(selectedRow, 1).toString());
+
+    txtContact.setText(
+            tblSuppliers.getValueAt(selectedRow, 2).toString());
+
+    txtPhone.setText(
+            tblSuppliers.getValueAt(selectedRow, 3).toString());
+
+    txtEmail.setText(
+            tblSuppliers.getValueAt(selectedRow, 4).toString());
+}
+    }//GEN-LAST:event_tblSuppliersMouseClicked
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        if (selectedSupplierId == -1) {
+    JOptionPane.showMessageDialog(this,
+            "Please select a supplier from the table first.");
+    return;
+}
+
+String name = txtName.getText().trim();
+String contactPerson = txtContact.getText().trim();
+String phone = txtPhone.getText().trim();
+String email = txtEmail.getText().trim();
+String address = txtAddress.getText().trim();
+
+if (name.isEmpty() || contactPerson.isEmpty() || phone.isEmpty()
+        || email.isEmpty() || address.isEmpty()) {
+
+    JOptionPane.showMessageDialog(this,
+            "Please fill in all fields.");
+    return;
+}
+
+Supplier supplier = new Supplier();
+
+supplier.setSupplierId(selectedSupplierId);
+supplier.setName(name);
+supplier.setContactPerson(contactPerson);
+supplier.setPhone(phone);
+supplier.setEmail(email);
+supplier.setAddress(address);
+
+SupplierDAO supplierDAO = new SupplierDAO();
+
+if (supplierDAO.updateSupplier(supplier)) {
+
+    JOptionPane.showMessageDialog(this,
+            "Supplier updated successfully!");
+
+    loadSuppliers();
+
+    txtName.setText("");
+    txtContact.setText("");
+    txtPhone.setText("");
+    txtEmail.setText("");
+    txtAddress.setText("");
+
+    selectedSupplierId = -1;
+
+} else {
+
+    JOptionPane.showMessageDialog(this,
+            "Could not update supplier.");
+}
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -308,6 +402,7 @@ txtAddress.setText("");
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

@@ -107,5 +107,28 @@ public class MedicineDAO {
         return false;
     }
 }
-    
+    public boolean updateMedicine(Medicine medicine) {
+
+    String sql = "UPDATE medicines SET name = ?, company = ?, medicine_type = ?, price = ?, quantity_in_stock = ?, reorder_level = ?, expiry_date = ?, supplier_id = ? WHERE medicine_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, medicine.getName());
+        stmt.setString(2, medicine.getCompany());
+        stmt.setString(3, medicine.getMedicineType());
+        stmt.setDouble(4, medicine.getPrice());
+        stmt.setInt(5, medicine.getQuantityInStock());
+        stmt.setInt(6, medicine.getReorderLevel());
+        stmt.setString(7, medicine.getExpiryDate());
+        stmt.setInt(8, medicine.getSupplierId());
+        stmt.setInt(9, medicine.getMedicineId());
+
+        return stmt.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }

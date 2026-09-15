@@ -142,6 +142,11 @@ loadSales();
         });
 
         btnRefresh.setText("Refresh Reports");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -202,6 +207,38 @@ loadSales();
         new AdminDashboard().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+                                                  
+    ReportDAO reportDAO = new ReportDAO();
+
+    double totalSales = reportDAO.getTotalSales();
+
+    lblTotalSales.setText(
+            String.format("Total Sales: R%.2f", totalSales));
+
+    int numberOfSales = reportDAO.getNumberOfSales();
+
+    lblNumberOfSales.setText(
+            "Number of Sales: " + numberOfSales);
+
+    int medicinesSold = reportDAO.getMedicinesSold();
+
+    lblMedicineSold.setText(
+            "Medicines Sold: " + medicinesSold);
+
+    int lowStockItems = reportDAO.getLowStockItems();
+
+    lblLowStock.setText(
+            "Low Stock Items: " + lowStockItems);
+
+    loadSales();
+
+    JOptionPane.showMessageDialog(this,
+            "Reports refreshed successfully!");
+
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
     /**
      * @param args the command line arguments

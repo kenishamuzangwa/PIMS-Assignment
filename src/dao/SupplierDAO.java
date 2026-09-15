@@ -88,4 +88,26 @@ public class SupplierDAO {
 
     return suppliers;
 }
+    
+    public boolean updateSupplier(Supplier supplier) {
+
+    String sql = "UPDATE suppliers SET name = ?, contact_person = ?, phone = ?, email = ?, address = ? WHERE supplier_id = ?";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, supplier.getName());
+        stmt.setString(2, supplier.getContactPerson());
+        stmt.setString(3, supplier.getPhone());
+        stmt.setString(4, supplier.getEmail());
+        stmt.setString(5, supplier.getAddress());
+        stmt.setInt(6, supplier.getSupplierId());
+
+        return stmt.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }
