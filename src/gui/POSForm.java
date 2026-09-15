@@ -443,7 +443,7 @@ if (saleId != -1) {
                 model.getValueAt(i, 2).toString());
 
         double priceAtSale = Double.parseDouble(
-                model.getValueAt(i, 3).toString());
+                model.getValueAt(i, 4).toString());
 
         boolean itemSaved = saleDAO.addSaleItem(
                 saleId,
