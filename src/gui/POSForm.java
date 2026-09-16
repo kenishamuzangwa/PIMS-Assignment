@@ -358,8 +358,8 @@ public POSForm() {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        new AdminDashboard().setVisible(true);
-        this.dispose();
+       new AdminDashboard().setVisible(true);
+this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void cmbMedicineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMedicineActionPerformed
