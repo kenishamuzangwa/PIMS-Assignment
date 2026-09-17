@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui;
+
 import model.User;
+
+import dao.MedicineDAO;
+import model.Medicine;
 /**
  *
  * @author kenisha
@@ -17,10 +21,46 @@ public class AdminDashboard extends javax.swing.JFrame {
 public AdminDashboard(User user) {
     initComponents();
     this.loggedInUser = user;
+    loadStockStatistics();
 }
 
 public AdminDashboard() {
     initComponents();
+    loadStockStatistics();
+}
+
+private void loadStockStatistics() {
+    MedicineDAO medicineDAO = new MedicineDAO();
+    java.util.List<Medicine> medicines = medicineDAO.getAllMedicines();
+
+    int totalMedicines = medicines.size();
+    int totalStock = 0;
+    int lowStock = 0;
+    int outOfStock = 0;
+
+    for (Medicine medicine : medicines) {
+        int stock = medicine.getQuantityInStock();
+        int reorderLevel = medicine.getReorderLevel();
+
+        totalStock += stock;
+
+        if (stock == 0) {
+            outOfStock++;
+        } else if (stock <= reorderLevel) {
+            lowStock++;
+        }
+    }
+
+    lblTotalMedicines.setText(String.valueOf(totalMedicines));
+    lblTotalStock.setText(String.valueOf(totalStock));
+    lblLowStock.setText(String.valueOf(lowStock));
+    lblOutOfStock.setText(String.valueOf(outOfStock));
+    
+    if (lowStock > 0) {
+    lblStockAlert.setText("LOW STOCK ALERT: " + lowStock + " item(s) need attention");
+} else {
+    lblStockAlert.setText("STOCK LEVELS: All items are adequately stocked");
+}
 }
 
     /**
@@ -46,6 +86,15 @@ public AdminDashboard() {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        lblTotalMedicines = new javax.swing.JLabel();
+        lblTotalStock = new javax.swing.JLabel();
+        lblLowStock = new javax.swing.JLabel();
+        lblOutOfStock = new javax.swing.JLabel();
+        lblStockAlert = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -138,6 +187,42 @@ public AdminDashboard() {
 
         jLabel8.setText("HealthFirst Pharmacy | Secure Pharmacy Management System | © 2026");
 
+        jLabel9.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel9.setText("TOTAL MEDICINES");
+
+        jLabel10.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel10.setText("TOTAL STOCK UNITS");
+
+        jLabel11.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel11.setText("LOW STOCK ITEMS");
+
+        jLabel12.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("OUT OF STOCK");
+
+        lblTotalMedicines.setFont(new java.awt.Font("Dialog", 1, 20)); // NOI18N
+        lblTotalMedicines.setForeground(new java.awt.Color(255, 0, 204));
+        lblTotalMedicines.setText("0");
+
+        lblTotalStock.setFont(new java.awt.Font("Dialog", 1, 20)); // NOI18N
+        lblTotalStock.setForeground(new java.awt.Color(255, 0, 204));
+        lblTotalStock.setText("0");
+
+        lblLowStock.setFont(new java.awt.Font("Dialog", 1, 20)); // NOI18N
+        lblLowStock.setForeground(new java.awt.Color(255, 0, 204));
+        lblLowStock.setText("0");
+
+        lblOutOfStock.setFont(new java.awt.Font("Dialog", 1, 20)); // NOI18N
+        lblOutOfStock.setForeground(new java.awt.Color(255, 0, 204));
+        lblOutOfStock.setText("0");
+
+        lblStockAlert.setFont(new java.awt.Font("Dubai", 1, 12)); // NOI18N
+        lblStockAlert.setForeground(new java.awt.Color(255, 0, 51));
+        lblStockAlert.setText("⚠ Low Stock Alert: Check inventory levels");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,9 +257,32 @@ public AdminDashboard() {
             .addGroup(layout.createSequentialGroup()
                 .addGap(158, 158, 158)
                 .addComponent(btnPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 188, Short.MAX_VALUE)
                 .addComponent(btnReports, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(126, 126, 126))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(lblTotalMedicines)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTotalStock)
+                .addGap(162, 162, 162)
+                .addComponent(lblLowStock, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(174, 174, 174)
+                .addComponent(lblOutOfStock, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(133, 133, 133))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblStockAlert)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel10)
+                        .addGap(52, 52, 52)
+                        .addComponent(jLabel11)
+                        .addGap(79, 79, 79)
+                        .addComponent(jLabel12)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +307,21 @@ public AdminDashboard() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReports, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblOutOfStock)
+                    .addComponent(lblLowStock)
+                    .addComponent(lblTotalStock)
+                    .addComponent(lblTotalMedicines))
+                .addGap(48, 48, 48)
+                .addComponent(lblStockAlert)
+                .addGap(42, 42, 42)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogout)
@@ -289,6 +411,9 @@ public AdminDashboard() {
     private javax.swing.JButton btnSupplier;
     private javax.swing.JButton btnUsers;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -296,5 +421,11 @@ public AdminDashboard() {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lblLowStock;
+    private javax.swing.JLabel lblOutOfStock;
+    private javax.swing.JLabel lblStockAlert;
+    private javax.swing.JLabel lblTotalMedicines;
+    private javax.swing.JLabel lblTotalStock;
     // End of variables declaration//GEN-END:variables
 }
