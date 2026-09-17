@@ -121,4 +121,47 @@ public class SaleDAO {
 
     return null;
 }
+    
+    public ResultSet getMonthlySales() {
+
+    String sql = "SELECT DATE_FORMAT(sale_date, '%Y-%m') AS month, "
+            + "SUM(total_amount) AS total_sales "
+            + "FROM sales "
+            + "GROUP BY DATE_FORMAT(sale_date, '%Y-%m') "
+            + "ORDER BY month";
+
+    try {
+        Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        return statement.executeQuery();
+
+    } catch (SQLException e) {
+        System.out.println("Error getting monthly sales: " + e.getMessage());
+    }
+
+    return null;
+}
+    
+    public ResultSet getTopSellingMedicines() {
+
+    String sql = "SELECT m.name, SUM(si.quantity_sold) AS total_sold "
+            + "FROM sale_items si "
+            + "JOIN medicines m ON si.medicine_id = m.medicine_id "
+            + "GROUP BY m.medicine_id, m.name "
+            + "ORDER BY total_sold DESC "
+            + "LIMIT 5";
+
+    try {
+        Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        return statement.executeQuery();
+
+    } catch (SQLException e) {
+        System.out.println("Error getting top-selling medicines: " + e.getMessage());
+    }
+
+    return null;
+}
 }
