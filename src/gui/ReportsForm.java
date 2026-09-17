@@ -3,10 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui;
+
+import dao.SaleDAO;
 import dao.ReportDAO;
+
+import java.sql.SQLException;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
 /**
  *
  * @author kenisha
@@ -18,7 +27,8 @@ public class ReportsForm extends javax.swing.JFrame {
      */
     public ReportsForm() {
         initComponents();
-        
+        loadSalesChart();
+        loadTopMedicinesChart();
         
         ReportDAO reportDAO = new ReportDAO();
 
@@ -88,6 +98,73 @@ loadSales();
                 "Could not load sales.");
     }
 }
+    private void loadSalesChart() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+    SaleDAO saleDAO = new SaleDAO();
+ResultSet resultSet = saleDAO.getMonthlySales();
+
+try {
+    while (resultSet != null && resultSet.next()) {
+        String month = resultSet.getString("month");
+        double totalSales = resultSet.getDouble("total_sales");
+
+        dataset.addValue(totalSales, "Sales", month);
+    }
+} catch (SQLException e) {
+    System.out.println("Error loading sales chart: " + e.getMessage());
+}
+
+    JFreeChart chart = ChartFactory.createLineChart(
+            "Monthly Sales",
+            "Month",
+            "Sales (R)",
+            dataset
+    );
+
+    ChartPanel chartPanel = new ChartPanel(chart);
+    chartPanel.setPreferredSize(new java.awt.Dimension(550, 280));
+
+    pnlSalesChart.removeAll();
+    pnlSalesChart.setLayout(new java.awt.BorderLayout());
+    pnlSalesChart.add(chartPanel, java.awt.BorderLayout.CENTER);
+    pnlSalesChart.revalidate();
+    pnlSalesChart.repaint();
+}
+    
+    private void loadTopMedicinesChart() {
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+    SaleDAO saleDAO = new SaleDAO();
+    ResultSet resultSet = saleDAO.getTopSellingMedicines();
+
+    try {
+        while (resultSet != null && resultSet.next()) {
+            String medicineName = resultSet.getString("name");
+            int totalSold = resultSet.getInt("total_sold");
+
+            dataset.addValue(totalSold, "Units Sold", medicineName);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error loading top medicines chart: " + e.getMessage());
+    }
+
+    JFreeChart chart = ChartFactory.createBarChart(
+            "Top-Selling Medicines",
+            "Medicine",
+            "Units Sold",
+            dataset
+    );
+
+    ChartPanel chartPanel = new ChartPanel(chart);
+    chartPanel.setPreferredSize(new java.awt.Dimension(550, 280));
+
+    pnlTopMedicinesChart.removeAll();
+    pnlTopMedicinesChart.setLayout(new java.awt.BorderLayout());
+    pnlTopMedicinesChart.add(chartPanel, java.awt.BorderLayout.CENTER);
+    pnlTopMedicinesChart.revalidate();
+    pnlTopMedicinesChart.repaint();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -112,6 +189,8 @@ loadSales();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        pnlSalesChart = new javax.swing.JPanel();
+        pnlTopMedicinesChart = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -188,25 +267,37 @@ loadSales();
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("RECENT SALES TRANSACTIONS");
 
+        javax.swing.GroupLayout pnlSalesChartLayout = new javax.swing.GroupLayout(pnlSalesChart);
+        pnlSalesChart.setLayout(pnlSalesChartLayout);
+        pnlSalesChartLayout.setHorizontalGroup(
+            pnlSalesChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 326, Short.MAX_VALUE)
+        );
+        pnlSalesChartLayout.setVerticalGroup(
+            pnlSalesChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 163, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout pnlTopMedicinesChartLayout = new javax.swing.GroupLayout(pnlTopMedicinesChart);
+        pnlTopMedicinesChart.setLayout(pnlTopMedicinesChartLayout);
+        pnlTopMedicinesChartLayout.setHorizontalGroup(
+            pnlTopMedicinesChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 341, Short.MAX_VALUE)
+        );
+        pnlTopMedicinesChartLayout.setVerticalGroup(
+            pnlTopMedicinesChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 152, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(115, 115, 115)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblNumberOfSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(124, 124, 124))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(229, 229, 229)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,28 +305,44 @@ loadSales();
                                     .addComponent(jLabel1)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(171, 171, 171)
-                                .addComponent(jLabel3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(lblMedicineSold, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lblLowStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))))
-                        .addGap(0, 146, Short.MAX_VALUE))
+                                .addComponent(jLabel3)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRefresh)))))
-                .addContainerGap())
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(247, 247, 247))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnRefresh)
+                        .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
-                .addGap(236, 236, 236)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlSalesChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLowStock, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNumberOfSales, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMedicineSold, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTotalSales, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(89, 89, 89)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(163, 163, 163))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(279, 279, 279)
+                        .addComponent(pnlTopMedicinesChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,24 +356,29 @@ loadSales();
                 .addGap(3, 3, 3)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblTotalSales)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                .addComponent(lblNumberOfSales)
-                .addGap(26, 26, 26)
-                .addComponent(lblMedicineSold)
-                .addGap(27, 27, 27)
-                .addComponent(lblLowStock)
-                .addGap(24, 24, 24)
-                .addComponent(jLabel4)
-                .addGap(33, 33, 33)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTotalSales)
+                        .addGap(23, 23, 23)
+                        .addComponent(lblNumberOfSales)
+                        .addGap(29, 29, 29)
+                        .addComponent(lblMedicineSold)
+                        .addGap(29, 29, 29)
+                        .addComponent(lblLowStock))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(btnRefresh))
-                .addGap(142, 142, 142))
+                .addGap(86, 86, 86)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlSalesChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlTopMedicinesChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(132, Short.MAX_VALUE))
         );
 
         pack();
@@ -359,6 +471,8 @@ loadSales();
     private javax.swing.JLabel lblNumberOfSales;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalSales;
+    private javax.swing.JPanel pnlSalesChart;
+    private javax.swing.JPanel pnlTopMedicinesChart;
     private javax.swing.JTable tblSales;
     // End of variables declaration//GEN-END:variables
 }
