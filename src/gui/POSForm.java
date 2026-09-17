@@ -515,7 +515,7 @@ double grandTotal = 0.0;
 
 for (int i = 0; i < model.getRowCount(); i++) {
     double total = Double.parseDouble(
-            model.getValueAt(i, 3).toString());
+            model.getValueAt(i, 4).toString());
 
     grandTotal += total;
 }

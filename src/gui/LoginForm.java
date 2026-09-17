@@ -206,7 +206,7 @@ if (user != null) {
         new AdminDashboard(user).setVisible(true);
     } 
     else if (user.getRole().equalsIgnoreCase("Cashier")) {
-        new CashierDashboard().setVisible(true);
+        new CashierDashboard(user).setVisible(true);
     }
 
     this.dispose();
